@@ -11,4 +11,11 @@ SOURCE=/volume2/snapshots/
 BACKUP=/volumeUSB1/usbshare/backup_no_enc/
 
 sudo mount -t ecryptfs $ENCDATA $BACKUP
+# if your pc has enough memory
 rsync -az -H --progress --delete --numeric-ids $SOURCE $BACKUP
+# if your pc has not enough memory
+# and folders are like daily.0/ daily.1/ ...  
+#rsync -az -H --progress --delete --numeric-ids --include='daily.*/***' --exclude='*' $SOURCE $BACKUP
+#rsync -az -H --progress --delete --numeric-ids --include='daily.6/***' --include='weekly.*/***' --exclude='*' $SOURCE $BACKUP
+#rsync -az -H --progress --delete --numeric-ids --include='weekly.3/***' --include='monthly.*/***' --exclude='*' $SOURCE $BACKUP
+#rsync -az -H --progress --delete --numeric-ids --include='daily.6/***' --include='weekly.3' --include='monthly.11/***' --exclude='*' $SOURCE $BACKUP
