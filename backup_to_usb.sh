@@ -16,25 +16,25 @@ rsync -az -H --progress --delete --numeric-ids $SOURCE $BACKUP
 # if your pc has not enough memory
 # and folders are like daily.0/ daily.1/ ... 
 if [ $# -eq 0 ] || [ "$1" = "-d" ] || [ "$1" = "--daily" ] ; then
-	echo "copy daily.*"
+  echo "copy daily.*"
   rsync -az -H --progress --delete --numeric-ids --include='daily.*/***' --exclude='*' $SOURCE $BACKUP
   else echo "skip daily." 
 fi
 
 if [ $# -eq 0 ] || [ "$1" = "-w" ] || [ "$1" = "--weekly" ] ; then
-	echo "copy weekly.*"
+  echo "copy weekly.*"
   rsync -az -H --progress --delete --numeric-ids --include='daily.6/***' --include='weekly.*/***' --exclude='*' $SOURCE $BACKUP
-	else echo "skip weekly."
+  else echo "skip weekly."
 fi
 
 if [ $# -eq 0 ] || [ "$1" = "-m" ] || [ "$1" = "--monthly" ] ; then
-	echo "copy monthly.*"
+  echo "copy monthly.*"
   rsync -az -H --progress --delete --numeric-ids --include='daily.6/***' --include='monthly.*/***' --exclude='*' $SOURCE $BACKUP
   else echo "skip monthly."
 fi
 
 if [ $# -eq 0 ] || [ "$1" = "-y" ] || [ "$1" = "--yearly" ] ; then
-	echo "copy yearly.*"
+  echo "copy yearly.*"
   rsync -az -H --progress --delete --numeric-ids --include='daily.6/***' --include='weekly.3' --include='monthly.11/***' --include='yearly.*/***' --exclude='*' $SOURCE $BACKUP
-else echo "skip yearly."
+  else echo "skip yearly."
 fi
