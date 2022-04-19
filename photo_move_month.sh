@@ -7,6 +7,9 @@ fi
 
 TIMERANGE=300
 MAXFILES=""
+LOGFILE="/volume1/Bilder/copy_log_$(date "+%Y-%m").txt"
+DESTPATH="/volume1/Bilder"
+BASEPATH="/volume1/photo/$FOLDER"
 
 while getopts :f:m:r:t:vh OPTION
 do
@@ -68,19 +71,12 @@ if [ ! $FOLDER ]; then
 	exit 1
 fi
 
-LOGFILE="/volume1/Images/copy_log_$(date "+%Y-%m").txt"
-DESTPATH="/volume1/Images"
-BASEPATH="/volume1/photo/$FOLDER"
-DESTPATHREMOTE="/volume2/snapshots/daily.0/Bilder"
-BASEPATHREMOTE="/volume2/snapshots/daily.0/photo/$FOLDER"
-
 shopt -s nullglob
 find  $BASEPATH -maxdepth 1 -iname "*.$TYPE" -mtime +$TIMERANGE -type f -print0 | while IFS= read -r -d '' file; do
 	FILENAME="${file##*/}"
 	YEAR=`date --date="@$(stat --format "%Y" "$BASEPATH/$FILENAME")" +"%Y"`
 	MONTH=`date --date="@$(stat --format  "%Y" "$BASEPATH/$FILENAME")" +"%m"`
 	DEST="$DESTPATH/$YEAR/$MONTH/$FOLDER"
-	DESTREMOTE="$DESTPATHREMOTE/$YEAR/$MONTH/$FOLDER"
 
 	if [ ! -d "$DEST" ] && [ "$VERBOSE" != 1 ]; then
 		echo "Creating folder $DEST"
@@ -88,20 +84,11 @@ find  $BASEPATH -maxdepth 1 -iname "*.$TYPE" -mtime +$TIMERANGE -type f -print0 
 		mkdir -p "$DEST"
 	fi
 
-    if [ ! -d "$DESTREMOTE" ] && [ "$VERBOSE" != 1 ]; then
-		echo "Creating remote folder $DESTREMOTE"
-		echo "Creating remote folder $DESTREMOTE" >> $LOGFILE
-		mkdir -p "$DESTREMOTE"
-	fi
-
-
-
-	echo "$FILENAME is being moved to $DEST/$FILENAME and $DESTREMOTE"
+	echo "$FILENAME is being moved to $DEST/$FILENAME"
 	echo "$BASEPATH/$FILENAME;->;$DEST/$FILENAME;;" >>$LOGFILE
 	
 	if [ "$VERBOSE" != 1 ]; then
 		mv "$BASEPATH/$FILENAME" "$DEST/$FILENAME"
-		mv "$BASEPATHREMOTE/$FILENAME" "$DESTREMOTE/$FILENAME"
 	else
 		echo "verbose mode"
 	fi
